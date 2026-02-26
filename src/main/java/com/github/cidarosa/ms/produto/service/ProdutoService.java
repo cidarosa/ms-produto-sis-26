@@ -67,7 +67,7 @@ public class ProdutoService {
 
     private void copyDtoToProduto(ProdutoDTO produtoDTO, Produto produto) {
 
-        produto.setNome(produto.getNome());
+        produto.setNome(produtoDTO.getNome());
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setValor(produtoDTO.getValor());
     }
