@@ -28,10 +28,15 @@ public class ProdutoDTO {
     @Positive(message = "O campo valor deve ser um número positivo e maior que zero")
     private Double valor;
 
+    @NotNull(message = "Campo categoria requerido")
+    private CategoriaDto categoria;
+
     public ProdutoDTO(Produto produto) {
         id = produto.getId();
         nome = produto.getNome();
         descricao = produto.getDescricao();
         valor = produto.getValor();
+
+        categoria = new CategoriaDto(produto.getCategoria());
     }
 }
