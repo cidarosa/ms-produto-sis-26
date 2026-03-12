@@ -2,11 +2,14 @@ package com.github.cidarosa.ms.produto.service;
 
 import com.github.cidarosa.ms.produto.dto.CategoriaDto;
 import com.github.cidarosa.ms.produto.entities.Categoria;
+import com.github.cidarosa.ms.produto.exceptions.DatabaseException;
 import com.github.cidarosa.ms.produto.exceptions.ResourceNotFoundException;
 import com.github.cidarosa.ms.produto.repositories.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -56,13 +59,18 @@ public class CategoriaService {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteCategoriaById(Long id){
+
         if(!categoriaRepository.existsById(id)){
             throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
         }
 
-        categoriaRepository.deleteById(id);
+        try {
+            categoriaRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Não foi possível excluir categoria. Existem produtos associados a ela");
+        }
     }
 
     private void copyDtoToCategoria(CategoriaDto inputDto, Categoria categoria) {

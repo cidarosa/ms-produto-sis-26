@@ -1,5 +1,6 @@
 package com.github.cidarosa.ms.produto.exceptions.handler;
 
+import com.github.cidarosa.ms.produto.exceptions.DatabaseException;
 import com.github.cidarosa.ms.produto.exceptions.ResourceNotFoundException;
 import com.github.cidarosa.ms.produto.exceptions.dto.CustomErrorDto;
 import com.github.cidarosa.ms.produto.exceptions.dto.ValidationErrorDto;
@@ -70,13 +71,25 @@ public class GlobalExceptionHandler {
 
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<CustomErrorDto> handleGenericException(Exception e, HttpServletRequest request){
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<CustomErrorDto> handleDatabase(DatabaseException e,
+                                                         HttpServletRequest request){
 
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = HttpStatus.CONFLICT; //409
         CustomErrorDto err = new CustomErrorDto(Instant.now(), status.value(),
-                "Erro interno inesperado", request.getRequestURI());
+                e.getMessage(), request.getRequestURI());
 
         return ResponseEntity.status(status).body(err);
     }
+
+
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<CustomErrorDto> handleGenericException(Exception e, HttpServletRequest request){
+//
+//        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+//        CustomErrorDto err = new CustomErrorDto(Instant.now(), status.value(),
+//                "Erro interno inesperado", request.getRequestURI());
+//
+//        return ResponseEntity.status(status).body(err);
+//    }
 }
