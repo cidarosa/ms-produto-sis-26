@@ -1,6 +1,7 @@
 package com.github.cidarosa.ms.produto.service;
 
-import com.github.cidarosa.ms.produto.dto.CategoriaDto;
+import com.github.cidarosa.ms.produto.dto.CategoriaRequestDto;
+import com.github.cidarosa.ms.produto.dto.CategoriaResponseDto;
 import com.github.cidarosa.ms.produto.entities.Categoria;
 import com.github.cidarosa.ms.produto.exceptions.DatabaseException;
 import com.github.cidarosa.ms.produto.exceptions.ResourceNotFoundException;
@@ -21,39 +22,39 @@ public class CategoriaService {
     private CategoriaRepository categoriaRepository;
 
     @Transactional(readOnly = true)
-    public List<CategoriaDto> findAllCategorias(){
+    public List<CategoriaResponseDto> findAllCategorias(){
 
         return  categoriaRepository.findAll()
-                .stream().map(CategoriaDto::new).toList();
+                .stream().map(CategoriaResponseDto::new).toList();
     }
 
     @Transactional(readOnly = true)
-    public CategoriaDto findCategoriaById(Long id){
+    public CategoriaResponseDto findCategoriaById(Long id){
 
         Categoria categoria = categoriaRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado. ID: " + id)
         );
 
-        return new CategoriaDto(categoria);
+        return new CategoriaResponseDto(categoria);
     }
 
     @Transactional
-    public CategoriaDto saveCategoria(CategoriaDto inputDto){
+    public CategoriaResponseDto saveCategoria(CategoriaRequestDto inputDto){
 
         Categoria categoria = new Categoria();
         copyDtoToCategoria(inputDto, categoria);
         categoria = categoriaRepository.save(categoria);
-        return new CategoriaDto(categoria);
+        return new CategoriaResponseDto(categoria);
     }
 
     @Transactional
-    public CategoriaDto updateCategoria(Long id, CategoriaDto inputDto){
+    public CategoriaResponseDto updateCategoria(Long id, CategoriaRequestDto inputDto){
 
         try {
             Categoria categoria = categoriaRepository.getReferenceById(id);
             copyDtoToCategoria(inputDto, categoria);
             categoria = categoriaRepository.save(categoria);
-            return new CategoriaDto(categoria);
+            return new CategoriaResponseDto(categoria);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
         }
@@ -73,7 +74,7 @@ public class CategoriaService {
         }
     }
 
-    private void copyDtoToCategoria(CategoriaDto inputDto, Categoria categoria) {
+    private void copyDtoToCategoria(CategoriaRequestDto inputDto, Categoria categoria) {
 
         categoria.setNome(inputDto.getNome());
     }

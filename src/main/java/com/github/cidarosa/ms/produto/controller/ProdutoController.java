@@ -1,6 +1,7 @@
 package com.github.cidarosa.ms.produto.controller;
 
-import com.github.cidarosa.ms.produto.dto.ProdutoDTO;
+import com.github.cidarosa.ms.produto.dto.ProdutoRequestDTO;
+import com.github.cidarosa.ms.produto.dto.ProdutoResponseDTO;
 import com.github.cidarosa.ms.produto.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +33,26 @@ public class ProdutoController {
 //    }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoDTO>> getAllProdutos(){
+    public ResponseEntity<List<ProdutoResponseDTO>> getAllProdutos() {
 
-        List<ProdutoDTO> list = produtoService.findAllProdutos();
+        List<ProdutoResponseDTO> list = produtoService.findAllProdutos();
 
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoDTO> getProdutoById(@PathVariable Long id){
+    public ResponseEntity<ProdutoResponseDTO> getProdutoById(@PathVariable Long id) {
 
-        ProdutoDTO produtoDTO = produtoService.findProdutoById(id);
+        ProdutoResponseDTO produtoDTO = produtoService.findProdutoById(id);
 
         return ResponseEntity.ok(produtoDTO);
     }
 
     @PostMapping
-    public ResponseEntity<ProdutoDTO> createProduto(@RequestBody @Valid ProdutoDTO produtoDTO){
+    public ResponseEntity<ProdutoResponseDTO> createProduto(@RequestBody @Valid
+                                                            ProdutoRequestDTO requestDTO) {
 
-        produtoDTO = produtoService.saveProduto(produtoDTO);
+        ProdutoResponseDTO produtoDTO = produtoService.saveProduto(requestDTO);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequestUri()
@@ -62,22 +64,22 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoDTO> updateProduto(@PathVariable Long id,
-                                                    @RequestBody @Valid ProdutoDTO produtoDTO){
+    public ResponseEntity<ProdutoResponseDTO> updateProduto(@PathVariable Long id,
+                                                            @RequestBody @Valid
+                                                            ProdutoRequestDTO requestDTO) {
 
-        produtoDTO = produtoService.updateProduto(id, produtoDTO);
+        ProdutoResponseDTO produtoDTO = produtoService.updateProduto(id, requestDTO);
 
         return ResponseEntity.ok(produtoDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduto(@PathVariable Long id){
+    public ResponseEntity<Void> deleteProduto(@PathVariable Long id) {
 
         produtoService.deleteProdutoById(id);
 
         return ResponseEntity.noContent().build();
     }
-
 
 
 }
